@@ -16,12 +16,13 @@ namespace NUnitTestAptimeaLappolainen
         // интерфейс для взаимодействия с браузером.
         IWebDriver driver;
         //переменная для хранения URL-адреса тестируемого сайта.
-        String test_url = "https://marenkova21.thkit.ee/phpLeht/PHPleht/index.php";
+        String test_url = "https://marenkova21.thkit.ee/forms/forms.html";
+        // Создается экземпляр генератора случайных чисел.
         private readonly Random _random = new Random();
 
         [SetUp]
-        // атрибут, указывающий на метод, который будет выполняться перед каждым тестом. Метод
-        //создает экземпляр браузера и максимизирует окно браузера.
+        // атрибут, указывающий на метод, который будет выполняться перед каждым тестом.
+        // Метод создает экземпляр браузера и максимизирует окно браузера.
         public void start_browser()
         {
             driver = new FirefoxDriver();
@@ -36,11 +37,20 @@ namespace NUnitTestAptimeaLappolainen
         {
          //Открывается URL-адрес сайта.
          //            driver.Url = test_url;
-            driver.Navigate().GoToUrl("https://marenkova21.thkit.ee/phpLeht/PHPleht/index.php");
+            driver.Navigate().GoToUrl("https://marenkova21.thkit.ee/forms/forms.html");
 
             //Производится попытка закрыть всплывающее окно cookie (если оно есть).
             try { IWebElement sButton2 = driver.FindElement(By.XPath("//button[@class='agree-button eu-cookie-compliance-secondary-button']")); sButton2.Click(); } catch (Exception) { }
 
+            // идет цикл, который выполняется один раз.
+
+            /* В цикле происходит заполнение разных форм на странице:
+             * Выбираются случайные радиокнопки (если они есть).
+             * В поля ввода вводится текст "Lappolainen".
+             * В текстовые области вводится текст "LappolainenMartin".
+             * В поля ввода с типом "number" вводится число 1.
+             * Выбирается элемент в выпадающем списке.
+             */
             for (int a = 0; a < 1; a++)
             {
                 Thread.Sleep(5500);
@@ -74,14 +84,17 @@ namespace NUnitTestAptimeaLappolainen
                     try { sSelect[i].Click(); sSelect[i].FindElements(By.XPath(".//*"))[2].Click(); } catch (Exception) { }
                 }
 
+
+                //Затем нажимаются кнопки "Sauvegarder brouillon" и "Suivant".
                 IWebElement sButtonE = driver.FindElement(By.XPath("//*[@value='Sauvegarder brouillon']"));
                 try { sButtonE.Click(); } catch (Exception) { }
                 Thread.Sleep(2500);
                 IWebElement sButton = driver.FindElement(By.XPath("//*[@value='Suivant']"));
                 try { sButton.Click(); } catch (Exception) { }
             }
-            Thread.Sleep(2500);
+            Thread.Sleep(2500); //После цикла ждется 2,5 секунды.
 
+            //Затем нажимается кнопка "Finaliser".
             IWebElement sButton3 = driver.FindElement(By.XPath("//*[@value='Finaliser']"));
             try { sButton3.Click(); } catch (Exception) { }
 
@@ -91,12 +104,13 @@ namespace NUnitTestAptimeaLappolainen
             try { sButton4.Click(); } catch (Exception) { }
 
             Thread.Sleep(2500);
-
+            //После этого выполняются нажатия на кнопки "Se connecter" и "Suivant".
             IWebElement sButton5 = driver.FindElement(By.XPath("//*[@value='Se connecter']"));
             try { sButton5.Click(); } catch (Exception) { }
-            Thread.Sleep(8000);
+            Thread.Sleep(8000);//В конце теста делается пауза в 8 секунд.
         }
-        [TearDown]
+        [TearDown] //указывает на метод close_Browser(),
+                   //который будет выполняться после каждого теста. Этот метод завершает работу браузера.
         public void close_Browser()
         {
             driver.Quit();
